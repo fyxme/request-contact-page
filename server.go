@@ -101,8 +101,6 @@ func main() {
 	googlePass := os.Getenv("GOOGLE_PASS")
 	toEmailsEnv := os.Getenv("TO_EMAILS")
 
-	log.Println(os.Environ())
-
 	switch "" {
 	case googleEmail, googleEmail, toEmailsEnv:
 		fmt.Println(ENV_VARIABLES_ERROR)
