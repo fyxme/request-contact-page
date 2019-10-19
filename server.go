@@ -1,8 +1,7 @@
 package main
 
 import (
-	"bytes"
-	"errors"
+	"bytes" "errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -115,6 +114,8 @@ func main() {
 		if r.Method != http.MethodPost {
 			return
 		}
+
+        r.Header.Set("Access-Control-Allow-Origin", "*")
 
 		form := EmailForm{
 			FirstName:     r.FormValue("firstname"),
