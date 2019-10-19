@@ -115,8 +115,9 @@ func main() {
 		if r.Method != http.MethodPost {
 			return
 		}
-
-        r.Header.Set("Access-Control-Allow-Origin", "*")
+   
+        w.Header().Set("Content-Type", "text/html; charset=utf-8")
+        w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		form := EmailForm{
 			FirstName:     r.FormValue("firstname"),
