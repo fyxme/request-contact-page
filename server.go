@@ -115,7 +115,7 @@ func main() {
 		if r.Method != http.MethodPost {
 			return
 		}
-   
+
         w.Header().Set("Content-Type", "text/html; charset=utf-8")
         w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -132,6 +132,7 @@ func main() {
 		if err := form.Validate(); err != nil {
 			// http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			http.Error(w, err.Error(), http.StatusBadRequest)
+            log.Println("Invalid form: ", err)
 			return
 		}
 
