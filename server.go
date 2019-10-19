@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	SERVER_PORT         = 8080
-	EMAIL_REGEX         = `^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$`
-	ENV_VARIABLES_ERROR = "Missing environment variables: GOOGLE_EMAIL, GOOGLE_PASS, TO_EMAILS"
-	EMAIL_SUBJECT       = "DEMO REQUEST"
-	TO_EMAILS_SEPARATOR = ","
+	SERVER_PORT            = 8080
+	EMAIL_VALIDATION_REGEX = `^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$`
+	ENV_VARIABLES_ERROR    = "Missing environment variables: GOOGLE_EMAIL, GOOGLE_PASS, TO_EMAILS"
+	EMAIL_SUBJECT          = "DEMO REQUEST"
+	TO_EMAILS_SEPARATOR    = ","
 )
 
 type EmailForm struct {
@@ -41,7 +41,7 @@ func (ef EmailForm) HasRequiredParameters() bool {
 }
 
 func (ef EmailForm) HasValidEmail() bool {
-	match, _ := regexp.MatchString(EMAIL_REGEX, ef.Email)
+	match, _ := regexp.MatchString(EMAIL_VALIDATION_REGEX, ef.Email)
 	return match
 }
 
