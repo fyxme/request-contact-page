@@ -6,7 +6,7 @@ A webserver to forward form contact requests to your email address.
 
 ### Installation using Docker:
 
-1. Clone the repo: `git clone ...`
+1. Clone the repo: `git clone https://github.com/fyxme/request-contact-page.git`
 2. Move the env.list.example file to env.list: `cp env.list.example env.list`
 3. Replace the variables in `env.list` with your credentials and the email addresses you want the email to be forwarded to.
 4. Build the Docker image: `docker build -t golang-request-demo-page .`
