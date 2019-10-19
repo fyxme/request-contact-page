@@ -2,9 +2,10 @@ package main
 
 import (
 	"bytes"
-    "errors"
+	"errors"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"net/smtp"
 	"os"
@@ -29,6 +30,7 @@ type EmailForm struct {
 	Position      string
 	ContactNumber string
 	Reason        string
+	Ip            string
 }
 
 func (ef EmailForm) HasRequiredParameters() bool {
@@ -55,6 +57,22 @@ func (ef EmailForm) Validate() error {
 	}
 
 	return nil
+}
+
+func getIP(req *http.Request) (string, string) {
+	ip, _, _ := net.SplitHostPort(req.RemoteAddr)
+
+	userIP := net.ParseIP(ip)
+	if userIP == nil {
+		//return nil, fmt.Errorf("userip: %q is not IP:port", req.RemoteAddr)
+		return "", ""
+	}
+
+	// This will only be defined when site is accessed via non-anonymous proxy
+	// and takes precedence over RemoteAddr
+	// Header.Get is case-insensitive
+	forward := req.Header.Get("X-Forwarded-For")
+	return userIP.String(), forward
 }
 
 func sendEmail(googleEmail, googlePass string, toEmails []string, body string) {
@@ -116,8 +134,10 @@ func main() {
 			return
 		}
 
-        w.Header().Set("Content-Type", "text/html; charset=utf-8")
-        w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
+		ip, forwardedFor := getIP(r)
 
 		form := EmailForm{
 			FirstName:     r.FormValue("firstname"),
@@ -127,12 +147,13 @@ func main() {
 			Position:      r.FormValue("position"),
 			ContactNumber: r.FormValue("number"),
 			Reason:        r.FormValue("reason"),
+			Ip:            fmt.Sprintf("%s [%s]", ip, forwardedFor),
 		}
 
 		if err := form.Validate(); err != nil {
 			// http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			http.Error(w, err.Error(), http.StatusBadRequest)
-            log.Println("Invalid form: ", err)
+			log.Println("Invalid form: ", err)
 			return
 		}
 
